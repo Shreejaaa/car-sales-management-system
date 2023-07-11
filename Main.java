@@ -1,67 +1,120 @@
 import java.util.*;
 
-class CarManagementSystem {
-    private Map<String, Integer> carSales;
+class Car 
+{
+    private String model;
+    private String brand;
+    private int year;
 
-    public CarManagementSystem() {
-        carSales = new HashMap<>();
+    public Car(String model, String brand, int year)
+    {
+        this.model = model;
+        this.brand = brand;
+        this.year = year;
     }
 
-    public void addSale(String carModel) {
-        carSales.put(carModel, carSales.getOrDefault(carModel, 0) + 1);
-        System.out.println("Car sale added successfully!");
+    public String getModel() 
+    {
+        return model;
     }
 
-    public void showTopSellingCar() {
-        System.out.println("Top Selling Car Model");
-        System.out.println("----------------------");
-        if (carSales.isEmpty()) {
-            System.out.println("No sales recorded.");
-            System.out.println("----------------------");
-            return;
-        }
-        int maxSales = 0;
-        String topCarModel = "";
-        for (Map.Entry<String, Integer> entry : carSales.entrySet()) {
-            String carModel = entry.getKey();
-            int salesCount = entry.getValue();
-            System.out.println("Car Model: " + carModel + ", Sales Count: " + salesCount);
-            if (salesCount > maxSales) {
-                maxSales = salesCount;
-                topCarModel = carModel;
-            }
-        }
-        System.out.println("Top Selling Car Model: " + topCarModel);
-        System.out.println("----------------------");
+    public String getBrand() 
+    {
+        return brand;
+    }
+
+    public int getYear() 
+    {
+        return year;
+    }
+
+    public String toString() 
+    {
+        return "Car " + model + " " + brand + " " + year;
     }
 }
 
-public class Main {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+class CarSales 
+{
+    private ArrayList<Car> cars;
 
-        CarManagementSystem system = new CarManagementSystem();
+    public CarSales() 
+    {
+        cars = new ArrayList<>();
+    }
+
+    public void addCar(Car car) 
+    {
+        cars.add(car);
+    }
+
+    public Car getTopSellingCar() 
+    {
+        int maxSales = 0;
+        Car topCar = null;
+        for (Car car : cars) {
+            int salesCount = car.getYear();
+            if (salesCount > maxSales) {
+                maxSales = salesCount;
+                topCar = car;
+            }
+        }
+        return topCar;
+    }
+}
+
+class UserInput 
+{
+    private Scanner scanner;
+
+    public UserInput() 
+    {
+        scanner = new Scanner(System.in);
+    }
+
+    public String getInput(String command) 
+    {
+        System.out.print(command);
+        return scanner.nextLine();
+    }
+
+    public int getIntInput(String command) 
+    {
+        String input = getInput(command);
+        return Integer.parseInt(input);
+    }
+}
+
+class Main 
+{
+    public static void main(String[] args) 
+    {
+        UserInput input = new UserInput();
+        CarSales sales = new CarSales();
 
         boolean exit = false;
         while (!exit) {
-            System.out.println("Car Management System");
-            System.out.println("-----------------------");
+            System.out.println("\n\n\t-----------------------");
+            System.out.println("\tCar Management System");
+            System.out.println("\t-----------------------\n");
             System.out.println("1. Add Car Sale");
             System.out.println("2. Show Top Selling Car");
-            System.out.println("3. Exit");
+            System.out.println("3. Exit\n");
             System.out.print("Enter your choice: ");
-            int choice = scanner.nextInt();
+            int choice = input.getIntInput("");
 
             switch (choice) {
                 case 1:
-                    scanner.nextLine();
-                    System.out.print("Enter Car Model: ");
-                    String carModel = scanner.nextLine();
-                    system.addSale(carModel);
+                    String model = input.getInput("Enter Car Model: ");
+                    String brand = input.getInput("Enter Car brand: ");
+                    int year = input.getIntInput("Enter Car Year: ");
+                    Car car = new Car(model, brand, year);
+                    sales.addCar(car);
                     break;
 
                 case 2:
-                    system.showTopSellingCar();
+                    Car topCar = sales.getTopSellingCar();
+                    System.out.println("\nTop Selling Car:" + topCar );
                     break;
 
                 case 3:
@@ -72,7 +125,5 @@ public class Main {
                     System.out.println("Invalid choice!");
             }
         }
-
-        scanner.close();
     }
 }
